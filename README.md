@@ -34,23 +34,23 @@ Temos também, ideias que vão muito além de código, para poder analisar e ent
 
 ### 1. Clone o repositório do projeto ou baixe os arquivos do zip:
 
-bash
+```bash
 git clone https://github.com/Asteriuz/JavaOceanStyle
-
+```
 
 ### 2. Inicialize o projeto Maven na sua IDE:
 
 #### No diretório do projeto, onde esta o arquivo pom.xml
 
-bash
+```bash
 mvn clean install
-
+```
 
 ### 3. Execute o projeto
 
-bash
+```bash
 mvn spring-boot:run
-
+```
 
 ### 4. Teste usando seu API tester de preferência (Postman/Insomnia):
 
