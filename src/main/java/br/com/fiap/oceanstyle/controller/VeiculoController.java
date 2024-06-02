@@ -5,8 +5,10 @@ import br.com.fiap.oceanstyle.dto.veiculo.AtualizacaoVeiculoDTO;
 import br.com.fiap.oceanstyle.dto.veiculo.CadastroVeiculoDTO;
 import br.com.fiap.oceanstyle.dto.veiculo.DetalhesVeiculoDTO;
 import br.com.fiap.oceanstyle.repository.VeiculoRepository;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import br.com.fiap.oceanstyle.repository.EmpresaRepository;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -18,6 +20,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 @RestController
 @RequestMapping("/veiculos")
+@Tag(name = "Veiculos")
 public class VeiculoController {
 
     @Autowired
@@ -28,7 +31,7 @@ public class VeiculoController {
 
     @PostMapping
     @Transactional
-    public ResponseEntity<DetalhesVeiculoDTO> cadastrar(@RequestBody CadastroVeiculoDTO dto,
+    public ResponseEntity<DetalhesVeiculoDTO> cadastrar(@Valid @RequestBody CadastroVeiculoDTO dto,
             UriComponentsBuilder builder) {
         var veiculo = new Veiculo(dto);
         var empresa = empresaRepository.getReferenceById(dto.empresaId());
@@ -53,7 +56,7 @@ public class VeiculoController {
     @PutMapping("/{id}")
     @Transactional
     public ResponseEntity<DetalhesVeiculoDTO> atualizar(@PathVariable("id") Long id,
-            @RequestBody AtualizacaoVeiculoDTO dto) {
+            @Valid @RequestBody AtualizacaoVeiculoDTO dto) {
         var veiculo = veiculoRepository.getReferenceById(id);
         veiculo.atualizar(dto);
         return ResponseEntity.ok(new DetalhesVeiculoDTO(veiculo));

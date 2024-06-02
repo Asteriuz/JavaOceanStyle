@@ -5,7 +5,9 @@ import br.com.fiap.oceanstyle.dto.inspetor.AtualizacaoInspetorDTO;
 import br.com.fiap.oceanstyle.dto.inspetor.CadastroInspetorDTO;
 import br.com.fiap.oceanstyle.dto.inspetor.DetalhesInspetorDTO;
 import br.com.fiap.oceanstyle.repository.InspetorRepository;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -17,6 +19,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 @RestController
 @RequestMapping("/inspetores")
+@Tag(name = "Inspetores")
 public class InspetorController {
 
     @Autowired
@@ -24,7 +27,7 @@ public class InspetorController {
 
     @PostMapping
     @Transactional
-    public ResponseEntity<DetalhesInspetorDTO> cadastrar(@RequestBody CadastroInspetorDTO dto,
+    public ResponseEntity<DetalhesInspetorDTO> cadastrar(@Valid @RequestBody CadastroInspetorDTO dto,
             UriComponentsBuilder builder) {
         var inspetor = new Inspetor(dto);
         inspetor = inspetorRepository.save(inspetor);
@@ -47,7 +50,7 @@ public class InspetorController {
     @PutMapping("/{id}")
     @Transactional
     public ResponseEntity<DetalhesInspetorDTO> atualizar(@PathVariable("id") Long id,
-            @RequestBody AtualizacaoInspetorDTO dto) {
+            @Valid @RequestBody AtualizacaoInspetorDTO dto) {
         var inspetor = inspetorRepository.getReferenceById(id);
         inspetor.atualizar(dto);
         return ResponseEntity.ok(new DetalhesInspetorDTO(inspetor));

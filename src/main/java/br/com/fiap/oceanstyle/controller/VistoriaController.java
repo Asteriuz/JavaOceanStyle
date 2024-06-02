@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import br.com.fiap.oceanstyle.dto.inspetor.DetalhesInspetorDTO;
@@ -15,12 +16,14 @@ import br.com.fiap.oceanstyle.dto.vistoria.DetalhesVistoriaDTO;
 import br.com.fiap.oceanstyle.repository.VeiculoRepository;
 import br.com.fiap.oceanstyle.repository.InspetorRepository;
 import br.com.fiap.oceanstyle.repository.VistoriaRepository;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import br.com.fiap.oceanstyle.model.Vistoria;
 import jakarta.persistence.EntityNotFoundException;
-import jakarta.transaction.Transactional;
+import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/vistorias")
+@Tag(name = "Vistorias")
 public class VistoriaController {
 
     @Autowired
@@ -90,7 +93,7 @@ public class VistoriaController {
 
     @PostMapping
     @Transactional
-    public ResponseEntity<DetalhesVistoriaDTO> create(@RequestBody CadastroVistoriaDTO dto,
+    public ResponseEntity<DetalhesVistoriaDTO> create(@Valid @RequestBody CadastroVistoriaDTO dto,
             UriComponentsBuilder uriBuilder) {
         var vistoria = new Vistoria(dto);
         var veiculo = veiculoRepository.getReferenceById(dto.veiculoId());
@@ -103,7 +106,7 @@ public class VistoriaController {
     @PutMapping("/{id}")
     @Transactional
     public ResponseEntity<DetalhesVistoriaDTO> update(@PathVariable("id") Long id,
-            @RequestBody AtualizacaoVistoriaDTO dto) {
+            @Valid @RequestBody AtualizacaoVistoriaDTO dto) {
         var vistoria = vistoriaRepository.getReferenceById(id);
         vistoria.atualizar(dto);
         return ResponseEntity.ok(new DetalhesVistoriaDTO(vistoria));

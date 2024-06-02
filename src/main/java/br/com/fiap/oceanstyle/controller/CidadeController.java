@@ -6,7 +6,9 @@ import br.com.fiap.oceanstyle.dto.cidade.CadastroCidadeDTO;
 import br.com.fiap.oceanstyle.dto.cidade.DetalhesCidadeDTO;
 import br.com.fiap.oceanstyle.repository.CidadeRepository;
 import br.com.fiap.oceanstyle.repository.EstadoRepository;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -18,6 +20,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 @RestController
 @RequestMapping("/cidades")
+@Tag(name = "Cidades")
 public class CidadeController {
 
     @Autowired
@@ -28,7 +31,7 @@ public class CidadeController {
 
     @PostMapping
     @Transactional
-    public ResponseEntity<DetalhesCidadeDTO> cadastrar(@RequestBody CadastroCidadeDTO dto,
+    public ResponseEntity<DetalhesCidadeDTO> cadastrar(@Valid @RequestBody CadastroCidadeDTO dto,
             UriComponentsBuilder builder) {
         var cidade = new Cidade(dto);
         var estado = estadoRepository.getReferenceById(dto.estadoId());
@@ -53,7 +56,7 @@ public class CidadeController {
     @PutMapping("/{id}")
     @Transactional
     public ResponseEntity<DetalhesCidadeDTO> atualizar(@PathVariable("id") Long id,
-            @RequestBody AtualizacaoCidadeDTO dto) {
+            @Valid @RequestBody AtualizacaoCidadeDTO dto) {
         var cidade = cidadeRepository.getReferenceById(id);
         cidade.atualizar(dto);
         return ResponseEntity.ok(new DetalhesCidadeDTO(cidade));

@@ -1,5 +1,6 @@
 package br.com.fiap.oceanstyle.dto.empresa;
 
+import br.com.fiap.oceanstyle.dto.endereco.DetalhesEnderecoDTO;
 import br.com.fiap.oceanstyle.model.Empresa;
 
 public record DetalhesEmpresaDTO(
@@ -7,7 +8,8 @@ public record DetalhesEmpresaDTO(
         String cnpj,
         String nome,
         String telefone,
-        String email) {
+        String email,
+        DetalhesEnderecoDTO endereco) {
 
     public DetalhesEmpresaDTO(Empresa empresa) {
         this(
@@ -15,7 +17,8 @@ public record DetalhesEmpresaDTO(
                 empresa.getCnpj(),
                 empresa.getNome(),
                 empresa.getTelefone(),
-                empresa.getEmail());
+                empresa.getEmail(),
+                new DetalhesEnderecoDTO(empresa.getEndereco()));
     }
 
 }

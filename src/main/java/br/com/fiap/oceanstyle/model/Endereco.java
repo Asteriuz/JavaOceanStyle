@@ -44,4 +44,5 @@ public class Endereco {
         numero = dto.numero();
         cep = dto.cep();
     }
+
 }

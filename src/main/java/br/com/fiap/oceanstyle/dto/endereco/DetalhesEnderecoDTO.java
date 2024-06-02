@@ -17,5 +17,6 @@ public record DetalhesEnderecoDTO(
                 endereco.getNumero(),
                 endereco.getCep(),
                 new DetalhesCidadeDTO(endereco.getCidade()));
+
     }
 }

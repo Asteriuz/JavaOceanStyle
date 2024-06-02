@@ -36,11 +36,16 @@ public class Empresa {
     @Column(name = "email", nullable = false, length = 50)
     private String email;
 
+    @OneToOne(mappedBy = "empresa", cascade = CascadeType.ALL)
+    private Endereco endereco;
+
     public Empresa(CadastroEmpresaDTO dto) {
         nome = dto.nome();
         cnpj = dto.cnpj();
         telefone = dto.telefone();
         email = dto.email();
+
+        endereco = new Endereco(dto.endereco());
     }
 
     public void atualizar(AtualizacaoEmpresaDTO dto) {

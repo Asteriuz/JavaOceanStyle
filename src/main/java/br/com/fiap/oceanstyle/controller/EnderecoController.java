@@ -2,6 +2,7 @@ package br.com.fiap.oceanstyle.controller;
 
 import br.com.fiap.oceanstyle.dto.endereco.DetalhesEnderecoDTO;
 import br.com.fiap.oceanstyle.repository.EnderecoRepository;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/endereco")
+@Tag(name = "Enderecos")
 public class EnderecoController {
 
     @Autowired
@@ -29,4 +31,5 @@ public class EnderecoController {
         var endereco = new DetalhesEnderecoDTO(enderecoRepository.getReferenceById(id));
         return ResponseEntity.ok(endereco);
     }
+
 }

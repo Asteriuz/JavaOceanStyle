@@ -4,8 +4,11 @@ import br.com.fiap.oceanstyle.model.Empresa;
 import br.com.fiap.oceanstyle.dto.empresa.AtualizacaoEmpresaDTO;
 import br.com.fiap.oceanstyle.dto.empresa.CadastroEmpresaDTO;
 import br.com.fiap.oceanstyle.dto.empresa.DetalhesEmpresaDTO;
+import br.com.fiap.oceanstyle.repository.CidadeRepository;
 import br.com.fiap.oceanstyle.repository.EmpresaRepository;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -17,16 +20,23 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 @RestController
 @RequestMapping("/empresas")
+@Tag(name = "Empresas")
 public class EmpresaController {
 
     @Autowired
     private EmpresaRepository empresaRepository;
 
+    @Autowired
+    private CidadeRepository cidadeRepository;
+
     @PostMapping
     @Transactional
-    public ResponseEntity<DetalhesEmpresaDTO> cadastrar(@RequestBody CadastroEmpresaDTO dto,
+    public ResponseEntity<DetalhesEmpresaDTO> cadastrar(@Valid @RequestBody CadastroEmpresaDTO dto,
             UriComponentsBuilder builder) {
-        var empresa = new Empresa(dto);
+        Empresa empresa = new Empresa(dto);
+        var cidade = cidadeRepository.getReferenceById(dto.endereco().cidadeId());
+        empresa.getEndereco().setCidade(cidade);
+        empresa.getEndereco().setEmpresa(empresa);
         empresa = empresaRepository.save(empresa);
         var uri = builder.path("/Empresa/{id}").buildAndExpand(empresa.getId()).toUri();
         return ResponseEntity.created(uri).body(new DetalhesEmpresaDTO(empresa));
@@ -47,7 +57,7 @@ public class EmpresaController {
     @PutMapping("/{id}")
     @Transactional
     public ResponseEntity<DetalhesEmpresaDTO> atualizar(@PathVariable("id") Long id,
-            @RequestBody AtualizacaoEmpresaDTO dto) {
+            @Valid @RequestBody AtualizacaoEmpresaDTO dto) {
         var empresa = empresaRepository.getReferenceById(id);
         empresa.atualizar(dto);
         return ResponseEntity.ok(new DetalhesEmpresaDTO(empresa));
