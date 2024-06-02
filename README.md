@@ -1,4 +1,4 @@
-# Sprint 01 - EconoMed
+# Sprint 01 - OceanStyle
 
 -   *Java Advanced*
 
