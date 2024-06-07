@@ -1,6 +1,7 @@
 package br.com.fiap.oceanstyle.model;
 
 import br.com.fiap.oceanstyle.dto.endereco.CadastroEnderecoDTO;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -10,7 +11,6 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 @Getter
 @Setter
 @NoArgsConstructor
-
 @Entity
 @Table(name = "gs_endereco")
 @EntityListeners(AuditingEntityListener.class)
@@ -33,6 +33,7 @@ public class Endereco {
 
     @OneToOne
     @JoinColumn(name = "empresa_id", unique = true)
+    @JsonBackReference
     private Empresa empresa;
 
     @ManyToOne(cascade = CascadeType.PERSIST)
@@ -44,5 +45,4 @@ public class Endereco {
         numero = dto.numero();
         cep = dto.cep();
     }
-
 }

@@ -1,6 +1,6 @@
 {
     "info": {
-        "_postman_id": "f458c998-848c-47b4-8d17-23b3ac06163f",
+        "_postman_id": "d9e787ac-97b4-47a8-9b84-ab28ee0cec3f",
         "name": "OceanStyle",
         "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
         "description": ""
@@ -114,6 +114,35 @@
                             "port": "8080"
                         }
                     }
+                },
+                {
+                    "name": "Buscar",
+                    "request": {
+                        "method": "GET",
+                        "url": {
+                            "raw": "http://localhost:8080/veiculos/buscar?nome=Veículo&empresaId=2",
+                            "query": [
+                                {
+                                    "key": "nome",
+                                    "value": "Veículo"
+                                },
+                                {
+                                    "key": "empresaId",
+                                    "value": "2"
+                                }
+                            ],
+                            "variable": [],
+                            "path": [
+                                "veiculos",
+                                "buscar"
+                            ],
+                            "protocol": "http",
+                            "host": [
+                                "localhost"
+                            ],
+                            "port": "8080"
+                        }
+                    }
                 }
             ]
         },
@@ -217,6 +246,31 @@
                             "path": [
                                 "empresas",
                                 "4"
+                            ],
+                            "protocol": "http",
+                            "host": [
+                                "localhost"
+                            ],
+                            "port": "8080"
+                        }
+                    }
+                },
+                {
+                    "name": "Buscar",
+                    "request": {
+                        "method": "GET",
+                        "url": {
+                            "raw": "http://localhost:8080/empresas/buscar?nome=Empresa A",
+                            "query": [
+                                {
+                                    "key": "nome",
+                                    "value": "Empresa A"
+                                }
+                            ],
+                            "variable": [],
+                            "path": [
+                                "empresas",
+                                "buscar"
                             ],
                             "protocol": "http",
                             "host": [
@@ -411,6 +465,35 @@
                             "path": [
                                 "vistorias",
                                 "4"
+                            ],
+                            "protocol": "http",
+                            "host": [
+                                "localhost"
+                            ],
+                            "port": "8080"
+                        }
+                    }
+                },
+                {
+                    "name": "Buscar",
+                    "request": {
+                        "method": "GET",
+                        "url": {
+                            "raw": "http://localhost:8080/vistorias/buscar?nivelRuidoMin=51&nivelRuidoMax=59",
+                            "query": [
+                                {
+                                    "key": "nivelRuidoMin",
+                                    "value": "51"
+                                },
+                                {
+                                    "key": "nivelRuidoMax",
+                                    "value": "59"
+                                }
+                            ],
+                            "variable": [],
+                            "path": [
+                                "vistorias",
+                                "buscar"
                             ],
                             "protocol": "http",
                             "host": [
@@ -766,9 +849,9 @@
                             "request": {
                                 "method": "GET",
                                 "url": {
-                                    "raw": "http://localhost:8080/endereco",
+                                    "raw": "http://localhost:8080/enderecos",
                                     "path": [
-                                        "endereco"
+                                        "enderecos"
                                     ],
                                     "protocol": "http",
                                     "host": [
@@ -783,10 +866,35 @@
                             "request": {
                                 "method": "GET",
                                 "url": {
-                                    "raw": "http://localhost:8080/endereco/1",
+                                    "raw": "http://localhost:8080/enderecos/1",
                                     "path": [
-                                        "endereco",
+                                        "enderecos",
                                         "1"
+                                    ],
+                                    "protocol": "http",
+                                    "host": [
+                                        "localhost"
+                                    ],
+                                    "port": "8080"
+                                }
+                            }
+                        },
+                        {
+                            "name": "Buscar",
+                            "request": {
+                                "method": "GET",
+                                "url": {
+                                    "raw": "http://localhost:8080/enderecos/buscar?cep=01001001",
+                                    "query": [
+                                        {
+                                            "key": "cep",
+                                            "value": "01001001"
+                                        }
+                                    ],
+                                    "variable": [],
+                                    "path": [
+                                        "enderecos",
+                                        "buscar"
                                     ],
                                     "protocol": "http",
                                     "host": [

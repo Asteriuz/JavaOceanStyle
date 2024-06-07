@@ -18,6 +18,8 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/empresas")
 @Tag(name = "Empresas")
@@ -28,6 +30,17 @@ public class EmpresaController {
 
     @Autowired
     private CidadeRepository cidadeRepository;
+
+    @GetMapping("/buscar")
+    public ResponseEntity<List<Empresa>> buscarPorNome(@RequestParam(required = false) String nome) {
+        List<Empresa> empresas;
+        if (nome != null) {
+            empresas = empresaRepository.buscarPorNome(nome);
+        } else {
+            empresas = empresaRepository.findAll();
+        }
+        return ResponseEntity.ok(empresas);
+    }
 
     @PostMapping
     @Transactional
@@ -57,7 +70,7 @@ public class EmpresaController {
     @PutMapping("/{id}")
     @Transactional
     public ResponseEntity<DetalhesEmpresaDTO> atualizar(@PathVariable("id") Long id,
-            @Valid @RequestBody AtualizacaoEmpresaDTO dto) {
+            @RequestBody AtualizacaoEmpresaDTO dto) {
         var empresa = empresaRepository.getReferenceById(id);
         empresa.atualizar(dto);
         return ResponseEntity.ok(new DetalhesEmpresaDTO(empresa));
@@ -67,9 +80,8 @@ public class EmpresaController {
     @Transactional
     public ResponseEntity<Void> remover(@PathVariable("id") Long id) {
         Empresa empresa = empresaRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Empresa não encontrado com ID: " + id));
+                .orElseThrow(() -> new EntityNotFoundException("Empresa não encontrada com ID: " + id));
         empresaRepository.delete(empresa);
         return ResponseEntity.noContent().build();
     }
-
 }

@@ -8,7 +8,6 @@ import br.com.fiap.oceanstyle.repository.VeiculoRepository;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import br.com.fiap.oceanstyle.repository.EmpresaRepository;
 import jakarta.persistence.EntityNotFoundException;
-import jakarta.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -17,6 +16,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/veiculos")
@@ -29,9 +30,37 @@ public class VeiculoController {
     @Autowired
     private EmpresaRepository empresaRepository;
 
+    @GetMapping("/empresa/{empresaId}")
+    public ResponseEntity<List<Veiculo>> buscarPorEmpresa(@PathVariable("empresaId") Long empresaId) {
+        var empresa = empresaRepository.findById(empresaId)
+                .orElseThrow(() -> new EntityNotFoundException("Empresa não encontrada com ID: " + empresaId));
+        var veiculos = veiculoRepository.buscarPorEmpresa(empresa);
+        return ResponseEntity.ok(veiculos);
+    }
+
+    @GetMapping("/buscar")
+    public ResponseEntity<List<Veiculo>> buscar(@RequestParam(required = false) Long empresaId,
+            @RequestParam(required = false) String nome) {
+        List<Veiculo> veiculos;
+        if (empresaId != null && nome != null) {
+            var empresa = empresaRepository.findById(empresaId)
+                    .orElseThrow(() -> new EntityNotFoundException("Empresa não encontrada com ID: " + empresaId));
+            veiculos = veiculoRepository.buscarPorNomeEEmpresa(empresa, nome);
+        } else if (nome != null) {
+            veiculos = veiculoRepository.buscarPorNome(nome);
+        } else if (empresaId != null) {
+            var empresa = empresaRepository.findById(empresaId)
+                    .orElseThrow(() -> new EntityNotFoundException("Empresa não encontrada com ID: " + empresaId));
+            veiculos = veiculoRepository.buscarPorEmpresa(empresa);
+        } else {
+            veiculos = veiculoRepository.findAll();
+        }
+        return ResponseEntity.ok(veiculos);
+    }
+
     @PostMapping
     @Transactional
-    public ResponseEntity<DetalhesVeiculoDTO> cadastrar(@Valid @RequestBody CadastroVeiculoDTO dto,
+    public ResponseEntity<DetalhesVeiculoDTO> cadastrar(@RequestBody CadastroVeiculoDTO dto,
             UriComponentsBuilder builder) {
         var veiculo = new Veiculo(dto);
         var empresa = empresaRepository.getReferenceById(dto.empresaId());
@@ -56,7 +85,7 @@ public class VeiculoController {
     @PutMapping("/{id}")
     @Transactional
     public ResponseEntity<DetalhesVeiculoDTO> atualizar(@PathVariable("id") Long id,
-            @Valid @RequestBody AtualizacaoVeiculoDTO dto) {
+            @RequestBody AtualizacaoVeiculoDTO dto) {
         var veiculo = veiculoRepository.getReferenceById(id);
         veiculo.atualizar(dto);
         return ResponseEntity.ok(new DetalhesVeiculoDTO(veiculo));
@@ -65,10 +94,9 @@ public class VeiculoController {
     @DeleteMapping("/{id}")
     @Transactional
     public ResponseEntity<Void> remover(@PathVariable("id") Long id) {
-        Veiculo empresa = veiculoRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Veiculo não encontrada com ID: " + id));
-        veiculoRepository.delete(empresa);
+        Veiculo veiculo = veiculoRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Veículo não encontrado com ID: " + id));
+        veiculoRepository.delete(veiculo);
         return ResponseEntity.noContent().build();
     }
-
 }

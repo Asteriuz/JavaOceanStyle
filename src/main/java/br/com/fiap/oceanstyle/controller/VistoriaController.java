@@ -6,7 +6,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import br.com.fiap.oceanstyle.dto.inspetor.DetalhesInspetorDTO;
@@ -19,7 +18,7 @@ import br.com.fiap.oceanstyle.repository.VistoriaRepository;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import br.com.fiap.oceanstyle.model.Vistoria;
 import jakarta.persistence.EntityNotFoundException;
-import jakarta.validation.Valid;
+import jakarta.transaction.Transactional;
 
 @RestController
 @RequestMapping("/vistorias")
@@ -34,6 +33,24 @@ public class VistoriaController {
 
     @Autowired
     private VeiculoRepository veiculoRepository;
+
+    @GetMapping("/buscar")
+    public ResponseEntity<List<DetalhesVistoriaDTO>> buscar(
+            @RequestParam(required = false) Integer nivelRuidoMin,
+            @RequestParam(required = false) Integer nivelRuidoMax) {
+        List<Vistoria> vistorias;
+        if (nivelRuidoMin != null && nivelRuidoMax != null) {
+            vistorias = vistoriaRepository.buscarPorNivelRuidoRange(nivelRuidoMin, nivelRuidoMax);
+        } else if (nivelRuidoMin != null) {
+            vistorias = vistoriaRepository.buscarPorNivelRuidoMin(nivelRuidoMin);
+        } else if (nivelRuidoMax != null) {
+            vistorias = vistoriaRepository.buscarPorNivelRuidoMax(nivelRuidoMax);
+        } else {
+            vistorias = vistoriaRepository.findAll();
+        }
+        var detalhesVistorias = vistorias.stream().map(DetalhesVistoriaDTO::new).toList();
+        return ResponseEntity.ok(detalhesVistorias);
+    }
 
     @DeleteMapping("/{idVistoria}/inspetores")
     @Transactional
@@ -93,7 +110,7 @@ public class VistoriaController {
 
     @PostMapping
     @Transactional
-    public ResponseEntity<DetalhesVistoriaDTO> create(@Valid @RequestBody CadastroVistoriaDTO dto,
+    public ResponseEntity<DetalhesVistoriaDTO> create(@RequestBody CadastroVistoriaDTO dto,
             UriComponentsBuilder uriBuilder) {
         var vistoria = new Vistoria(dto);
         var veiculo = veiculoRepository.getReferenceById(dto.veiculoId());
@@ -106,7 +123,7 @@ public class VistoriaController {
     @PutMapping("/{id}")
     @Transactional
     public ResponseEntity<DetalhesVistoriaDTO> update(@PathVariable("id") Long id,
-            @Valid @RequestBody AtualizacaoVistoriaDTO dto) {
+            @RequestBody AtualizacaoVistoriaDTO dto) {
         var vistoria = vistoriaRepository.getReferenceById(id);
         vistoria.atualizar(dto);
         return ResponseEntity.ok(new DetalhesVistoriaDTO(vistoria));

@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import br.com.fiap.oceanstyle.dto.empresa.AtualizacaoEmpresaDTO;
 import br.com.fiap.oceanstyle.dto.empresa.CadastroEmpresaDTO;
@@ -12,7 +13,6 @@ import br.com.fiap.oceanstyle.dto.empresa.CadastroEmpresaDTO;
 @Getter
 @Setter
 @NoArgsConstructor
-
 @Entity
 @Table(name = "gs_empresa")
 @EntityListeners(AuditingEntityListener.class)
@@ -37,6 +37,7 @@ public class Empresa {
     private String email;
 
     @OneToOne(mappedBy = "empresa", cascade = CascadeType.ALL)
+    @JsonManagedReference
     private Endereco endereco;
 
     public Empresa(CadastroEmpresaDTO dto) {
@@ -46,6 +47,7 @@ public class Empresa {
         email = dto.email();
 
         endereco = new Endereco(dto.endereco());
+        endereco.setEmpresa(this);
     }
 
     public void atualizar(AtualizacaoEmpresaDTO dto) {
